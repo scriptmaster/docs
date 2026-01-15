@@ -18,14 +18,21 @@ A lightweight, fast documentation server written in Go that converts Markdown fi
 
 Download the latest `docs.exe` for Windows from the releases.
 
-### Run
+### Convert Markdown to HTML
 
 1. Place `docs.exe` in your project directory
 2. Create a `docs/` folder with your `.md` files
-3. Run `docs.exe`
-4. Open http://localhost:3005 in your browser
+3. Run `docs.exe` to convert files to `dist/` directory
 
-## Configuration
+### Serve Documentation
+
+To build and serve documentation:
+
+```bash
+docs.exe serve
+```
+
+Then open http://localhost:3005 in your browser
 
 ### Port Configuration
 
@@ -33,7 +40,7 @@ You can change the server port using:
 
 **Environment Variable:**
 ```bash
-PORT=8080 docs.exe
+PORT=8080 docs.exe serve
 ```
 
 **Or create a `.env` file:**
@@ -54,10 +61,10 @@ PORT=8080
 GOOS=windows GOARCH=amd64 go build -o docs.exe
 
 # For Linux
-go build -o docserver
+go build -o docs-linux
 
 # For macOS
-GOOS=darwin GOARCH=amd64 go build -o docserver
+GOOS=darwin GOARCH=amd64 go build -o docs-macos
 ```
 
 ## Usage
@@ -73,21 +80,40 @@ your-project/
 └── docs.exe
 ```
 
-### Running the Server
+### Converting Files
+
+To convert markdown files to HTML without serving:
 
 ```bash
 # Windows
 docs.exe
 
 # Linux/macOS
-./docserver
+./docs-linux
+```
+
+This will:
+1. Convert all `.md` files in `docs/` to HTML
+2. Save them in the `dist/` directory with CDN-linked assets
+3. Exit after conversion
+
+### Serving Documentation
+
+To build and serve documentation:
+
+```bash
+# Windows
+docs.exe serve
+
+# Linux/macOS
+./docs-linux serve
 ```
 
 The server will:
 1. Convert all `.md` files in `docs/` to HTML
 2. Save them in the `dist/` directory
 3. Start a web server on port 3005 (or configured port)
-4. Serve the documentation with a beautiful Material-inspired theme
+4. Serve the documentation with a beautiful Slate & Blue theme
 
 ### Embedded Documentation
 
