@@ -22,6 +22,9 @@ var embeddedDocs embed.FS
 //go:embed templates/theme.html
 var themeTemplate string
 
+//go:embed static/css/* static/js/*
+var staticFiles embed.FS
+
 const defaultPort = "3005"
 
 type PageData struct {
@@ -59,6 +62,11 @@ func main() {
 		port = defaultPort
 	}
 
+	// Write embedded static files to dist
+	if err := writeStaticFiles(); err != nil {
+		log.Fatalf("Error writing static files: %v", err)
+	}
+
 	// Convert markdown files to HTML
 	if err := convertMarkdownFiles(); err != nil {
 		log.Fatalf("Error converting markdown files: %v", err)
@@ -66,10 +74,47 @@ func main() {
 
 	// Setup HTTP server
 	http.HandleFunc("/", serveHTML)
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("dist"))))
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("dist/static"))))
 
 	log.Printf("Starting server on http://localhost:%s", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
+}
+
+func writeStaticFiles() error {
+	// Create dist/static directories
+	if err := os.MkdirAll("dist/static", 0755); err != nil {
+		return fmt.Errorf("failed to create dist/static directory: %w", err)
+	}
+
+	// Write CSS files
+	cssFiles := []string{"pico.min.css"}
+	for _, file := range cssFiles {
+		content, err := staticFiles.ReadFile("static/css/" + file)
+		if err != nil {
+			return fmt.Errorf("failed to read embedded CSS %s: %w", file, err)
+		}
+		cssPath := filepath.Join("dist", "static", file)
+		if err := os.WriteFile(cssPath, content, 0644); err != nil {
+			return fmt.Errorf("failed to write CSS %s: %w", file, err)
+		}
+		log.Printf("Wrote static file: %s", file)
+	}
+
+	// Write JS files
+	jsFiles := []string{"vue.global.prod.js"}
+	for _, file := range jsFiles {
+		content, err := staticFiles.ReadFile("static/js/" + file)
+		if err != nil {
+			return fmt.Errorf("failed to read embedded JS %s: %w", file, err)
+		}
+		jsPath := filepath.Join("dist", "static", file)
+		if err := os.WriteFile(jsPath, content, 0644); err != nil {
+			return fmt.Errorf("failed to write JS %s: %w", file, err)
+		}
+		log.Printf("Wrote static file: %s", file)
+	}
+
+	return nil
 }
 
 func convertMarkdownFiles() error {
