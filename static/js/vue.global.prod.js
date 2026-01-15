@@ -1,6 +1,10 @@
 /*!
  * Minimal Vue.js stub for documentation
- * Full Vue.js would be loaded from CDN or can be embedded separately
+ * This is a lightweight stub providing basic Vue.js API compatibility.
+ * For full Vue.js features, replace this file with the complete Vue.js library from https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js
+ * 
+ * Supported: createApp(), mount(), basic data/mounted lifecycle
+ * Not supported: Reactivity, templates, directives, components, router, etc.
  */
 const Vue = {
   createApp: function(config) {

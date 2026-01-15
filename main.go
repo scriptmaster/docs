@@ -86,32 +86,30 @@ func writeStaticFiles() error {
 		return fmt.Errorf("failed to create dist/static directory: %w", err)
 	}
 
+	// Helper function to write files from embedded FS
+	writeFiles := func(sourceDir, fileType string, files []string) error {
+		for _, file := range files {
+			content, err := staticFiles.ReadFile(filepath.Join(sourceDir, file))
+			if err != nil {
+				return fmt.Errorf("failed to read embedded %s %s: %w", fileType, file, err)
+			}
+			destPath := filepath.Join("dist", "static", file)
+			if err := os.WriteFile(destPath, content, 0644); err != nil {
+				return fmt.Errorf("failed to write %s %s: %w", fileType, file, err)
+			}
+			log.Printf("Wrote static file: %s", file)
+		}
+		return nil
+	}
+
 	// Write CSS files
-	cssFiles := []string{"pico.min.css"}
-	for _, file := range cssFiles {
-		content, err := staticFiles.ReadFile("static/css/" + file)
-		if err != nil {
-			return fmt.Errorf("failed to read embedded CSS %s: %w", file, err)
-		}
-		cssPath := filepath.Join("dist", "static", file)
-		if err := os.WriteFile(cssPath, content, 0644); err != nil {
-			return fmt.Errorf("failed to write CSS %s: %w", file, err)
-		}
-		log.Printf("Wrote static file: %s", file)
+	if err := writeFiles("static/css", "CSS", []string{"pico.min.css"}); err != nil {
+		return err
 	}
 
 	// Write JS files
-	jsFiles := []string{"vue.global.prod.js"}
-	for _, file := range jsFiles {
-		content, err := staticFiles.ReadFile("static/js/" + file)
-		if err != nil {
-			return fmt.Errorf("failed to read embedded JS %s: %w", file, err)
-		}
-		jsPath := filepath.Join("dist", "static", file)
-		if err := os.WriteFile(jsPath, content, 0644); err != nil {
-			return fmt.Errorf("failed to write JS %s: %w", file, err)
-		}
-		log.Printf("Wrote static file: %s", file)
+	if err := writeFiles("static/js", "JS", []string{"vue.global.prod.js"}); err != nil {
+		return err
 	}
 
 	return nil
