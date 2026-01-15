@@ -2,6 +2,11 @@
 
 A lightweight, fast documentation server written in Go that converts Markdown files to beautiful HTML pages with a Material-inspired theme.
 
+## Screenshots
+
+![Documentation Homepage](https://github.com/user-attachments/assets/9ab3dab8-22d9-4d65-8110-2c32fb28e208)
+*The documentation server features a full-height sidebar navigation and clean, modern design*
+
 ## Features
 
 - 📝 **Markdown to HTML Conversion**: Automatically converts `docs/*.md` files to `dist/*.html`
