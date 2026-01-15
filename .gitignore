@@ -6,6 +6,7 @@
 docserver
 docs-linux
 docs-macos
+docs-server
 
 # Test binary
 *.test
