@@ -144,6 +144,14 @@
             color: var(--slate-400);
         }
         
+        .toc a.toc-h2 {
+            padding-left: 0.75rem;
+        }
+        
+        .toc a.toc-h3 {
+            padding-left: 1.5rem;
+        }
+        
         .toc a:hover {
             color: var(--blue-400);
             background: transparent;
@@ -467,11 +475,12 @@
             const headers = content.querySelectorAll('h2, h3');
             if (headers.length === 0) return;
             
-            // Find current page link
-            const currentPath = window.location.pathname;
-            const currentPageLink = Array.from(sidebar.querySelectorAll('a')).find(a => 
-                a.getAttribute('href') === currentPath
-            );
+            // Find current page link - normalize paths by removing trailing slashes
+            const currentPath = window.location.pathname.replace(/\/$/, '');
+            const currentPageLink = Array.from(sidebar.querySelectorAll('a')).find(a => {
+                const href = a.getAttribute('href').replace(/\/$/, '');
+                return href === currentPath;
+            });
             
             if (!currentPageLink) return;
             
@@ -479,20 +488,33 @@
             const tocList = document.createElement('ul');
             tocList.className = 'toc';
             
+            // Track used IDs to prevent duplicates
+            const usedIds = new Set();
+            
             headers.forEach(header => {
                 // Add ID if not present
                 if (!header.id) {
-                    header.id = header.textContent
+                    let baseId = header.textContent
                         .toLowerCase()
                         .replace(/[^a-z0-9]+/g, '-')
                         .replace(/(^-|-$)/g, '');
+                    
+                    // Ensure unique ID
+                    let id = baseId;
+                    let counter = 1;
+                    while (usedIds.has(id)) {
+                        id = baseId + '-' + counter;
+                        counter++;
+                    }
+                    header.id = id;
+                    usedIds.add(id);
                 }
                 
                 const li = document.createElement('li');
                 const a = document.createElement('a');
                 a.href = '#' + header.id;
                 a.textContent = header.textContent;
-                a.style.paddingLeft = (header.tagName === 'H3' ? '1.5rem' : '0.75rem');
+                a.className = 'toc-' + header.tagName.toLowerCase();
                 li.appendChild(a);
                 tocList.appendChild(li);
             });
@@ -504,9 +526,10 @@
         
         // Smooth scroll for anchor links
         document.addEventListener('click', function(e) {
-            if (e.target.tagName === 'A' && e.target.getAttribute('href')?.startsWith('#')) {
+            const target = e.target.closest('a');
+            if (target && target.getAttribute('href')?.startsWith('#')) {
                 e.preventDefault();
-                const targetId = e.target.getAttribute('href').slice(1);
+                const targetId = target.getAttribute('href').slice(1);
                 const targetElement = document.getElementById(targetId);
                 if (targetElement) {
                     targetElement.scrollIntoView({ behavior: 'smooth' });
