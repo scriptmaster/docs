@@ -4,7 +4,7 @@ A lightweight, fast documentation server written in Go that converts Markdown fi
 
 ## Screenshots
 
-![Documentation Homepage](https://github.com/user-attachments/assets/9ab3dab8-22d9-4d65-8110-2c32fb28e208)
+![Documentation Homepage](https://github.com/user-attachments/assets/c815def6-dd53-4a1c-993f-6015b8f8214f)
 *The documentation server features a full-height sidebar navigation and clean, modern design*
 
 ## Features
