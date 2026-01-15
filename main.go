@@ -35,6 +35,20 @@ type PageLink struct {
 	Path string
 }
 
+// titleCase converts a string to title case (first letter of each word capitalized)
+func titleCase(s string) string {
+	if s == "" {
+		return s
+	}
+	words := strings.Fields(s)
+	for i, word := range words {
+		if len(word) > 0 {
+			words[i] = strings.ToUpper(word[:1]) + word[1:]
+		}
+	}
+	return strings.Join(words, " ")
+}
+
 func main() {
 	// Load .env file if it exists
 	godotenv.Load()
@@ -107,7 +121,7 @@ func convertMarkdownFiles() error {
 	for _, filename := range mdFiles {
 		name := strings.TrimSuffix(filename, ".md")
 		name = strings.ReplaceAll(name, "-", " ")
-		name = strings.Title(name)
+		name = titleCase(name)
 		htmlFilename := strings.TrimSuffix(filename, ".md") + ".html"
 		pages = append(pages, PageLink{
 			Name: name,
@@ -136,7 +150,7 @@ func convertMarkdownFiles() error {
 		// Get title from filename
 		title := strings.TrimSuffix(filename, ".md")
 		title = strings.ReplaceAll(title, "-", " ")
-		title = strings.Title(title)
+		title = titleCase(title)
 
 		// Write HTML file
 		htmlFilename := strings.TrimSuffix(filename, ".md") + ".html"
@@ -219,7 +233,7 @@ func serveHTML(w http.ResponseWriter, r *http.Request) {
 		if !entry.IsDir() && strings.HasSuffix(entry.Name(), ".html") {
 			name := strings.TrimSuffix(entry.Name(), ".html")
 			name = strings.ReplaceAll(name, "-", " ")
-			name = strings.Title(name)
+			name = titleCase(name)
 			pages = append(pages, PageLink{
 				Name: name,
 				Path: "/" + entry.Name(),
