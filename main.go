@@ -22,9 +22,6 @@ var embeddedDocs embed.FS
 //go:embed templates/theme.html
 var themeTemplate string
 
-//go:embed static/css/* static/js/*
-var staticFiles embed.FS
-
 const defaultPort = "3005"
 
 type PageData struct {
@@ -56,15 +53,24 @@ func main() {
 	// Load .env file if it exists
 	godotenv.Load()
 
+	// Check for serve subcommand
+	if len(os.Args) > 1 && os.Args[1] == "serve" {
+		serveCommand()
+		return
+	}
+
+	// Default behavior: just convert files without serving
+	if err := convertMarkdownFiles(); err != nil {
+		log.Fatalf("Error converting markdown files: %v", err)
+	}
+	log.Println("Markdown files converted successfully to dist/")
+}
+
+func serveCommand() {
 	// Get port from environment or use default
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = defaultPort
-	}
-
-	// Write embedded static files to dist
-	if err := writeStaticFiles(); err != nil {
-		log.Fatalf("Error writing static files: %v", err)
 	}
 
 	// Convert markdown files to HTML
@@ -74,45 +80,9 @@ func main() {
 
 	// Setup HTTP server
 	http.HandleFunc("/", serveHTML)
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("dist/static"))))
 
 	log.Printf("Starting server on http://localhost:%s", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
-}
-
-func writeStaticFiles() error {
-	// Create dist/static directories
-	if err := os.MkdirAll("dist/static", 0755); err != nil {
-		return fmt.Errorf("failed to create dist/static directory: %w", err)
-	}
-
-	// Helper function to write files from embedded FS
-	writeFiles := func(sourceDir, fileType string, files []string) error {
-		for _, file := range files {
-			content, err := staticFiles.ReadFile(filepath.Join(sourceDir, file))
-			if err != nil {
-				return fmt.Errorf("failed to read embedded %s %s: %w", fileType, file, err)
-			}
-			destPath := filepath.Join("dist", "static", file)
-			if err := os.WriteFile(destPath, content, 0644); err != nil {
-				return fmt.Errorf("failed to write %s %s: %w", fileType, file, err)
-			}
-			log.Printf("Wrote static file: %s", file)
-		}
-		return nil
-	}
-
-	// Write CSS files
-	if err := writeFiles("static/css", "CSS", []string{"pico.min.css"}); err != nil {
-		return err
-	}
-
-	// Write JS files
-	if err := writeFiles("static/js", "JS", []string{"vue.global.prod.js"}); err != nil {
-		return err
-	}
-
-	return nil
 }
 
 func convertMarkdownFiles() error {
