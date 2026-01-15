@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}} - Documentation</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+    <style>
+        :root {
+            --primary: #00897b;
+            --primary-hover: #00695c;
+            --primary-focus: rgba(0, 137, 123, 0.125);
+        }
+        body {
+            padding: 0;
+            margin: 0;
+        }
+        .container-fluid {
+            padding: 0;
+        }
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+        .main-layout {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: calc(100vh - 80px);
+        }
+        .sidebar {
+            background: #f8f9fa;
+            border-right: 1px solid #e0e0e0;
+            padding: 1.5rem 1rem;
+            overflow-y: auto;
+        }
+        .sidebar nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar nav ul li {
+            margin-bottom: 0.5rem;
+        }
+        .sidebar nav ul li a {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: #424242;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .sidebar nav ul li a:hover {
+            background: var(--primary-focus);
+            color: var(--primary);
+        }
+        .content {
+            padding: 2rem;
+            max-width: 1200px;
+        }
+        .content h1 {
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .content h2 {
+            color: #424242;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        .content h3, .content h4, .content h5, .content h6 {
+            color: #616161;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        .content pre {
+            background: #263238;
+            color: #aed581;
+            padding: 1rem;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .content code {
+            background: #f5f5f5;
+            color: #d81b60;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-size: 0.9em;
+        }
+        .content pre code {
+            background: transparent;
+            color: inherit;
+            padding: 0;
+        }
+        .content blockquote {
+            border-left: 4px solid var(--primary);
+            background: var(--primary-focus);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        .content table th {
+            background: var(--primary);
+            color: white;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        .content table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .content a {
+            color: var(--primary);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s;
+        }
+        .content a:hover {
+            border-bottom-color: var(--primary);
+        }
+        footer {
+            background: #f8f9fa;
+            border-top: 1px solid #e0e0e0;
+            padding: 1rem 2rem;
+            text-align: center;
+            color: #757575;
+            font-size: 0.9rem;
+        }
+        @media (max-width: 768px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                border-right: none;
+                border-bottom: 1px solid #e0e0e0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <header>
+            <div class="container">
+                <h1>📚 {{.Title}}</h1>
+            </div>
+        </header>
+        
+        <div class="main-layout">
+            {{if .Pages}}
+            <aside class="sidebar">
+                <nav>
+                    <ul>
+                        {{range .Pages}}
+                        <li><a href="{{.Path}}">{{.Name}}</a></li>
+                        {{end}}
+                    </ul>
+                </nav>
+            </aside>
+            {{end}}
+            
+            <main class="content">
+                {{.Content}}
+                
+                {{if not .Pages}}
+                <nav>
+                    <ul>
+                        <li><a href="/">← Back to Home</a></li>
+                    </ul>
+                </nav>
+                {{end}}
+            </main>
+        </div>
+        
+        <footer>
+            <p>Built with Go • Styled with Pico CSS • Enhanced with Vue.js</p>
+        </footer>
+    </div>
+
+    <script>
+        const { createApp } = Vue;
+        
+        createApp({
+            data() {
+                return {
+                    message: 'Documentation ready'
+                }
+            },
+            mounted() {
+                console.log('Vue.js initialized');
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
