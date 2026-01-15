@@ -7,6 +7,8 @@ docserver
 docs-linux
 docs-macos
 docs-server
+docs-bin
+docs/docs
 
 # Test binary
 *.test
