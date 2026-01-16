@@ -19,13 +19,13 @@ cd /d "%SCRIPT_DIR%"
 
 REM Run the latest version
 REM Version is updated by Makefile during build
-echo Running NDT Logo Display v0.0.1.79...
+echo Running NDT Logo Display v0.0.1.80...
 
 REM Check if the versioned exe exists, if not find the latest
-if exist "v0.0.1.79.exe" (
-    start "" "v0.0.1.79.exe"
+if exist "v0.0.1.80.exe" (
+    start "" "v0.0.1.80.exe"
 ) else (
-    echo Version v0.0.1.79.exe not found. Searching for latest version...
+    echo Version v0.0.1.80.exe not found. Searching for latest version...
     for /f "delims=" %%f in ('dir /b /o-d v*.exe 2>nul') do (
         echo Found latest version: %%f
         start "" "%%f"
