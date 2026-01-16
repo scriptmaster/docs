@@ -1,25 +1,2 @@
-# Binaries
-*.exe
-*.dll
-*.so
-*.dylib
-docserver
-docs-linux
-docs-macos
-docs-server
-
-# Test binary
-*.test
-
-# Output directories
-dist/
-
-# Go workspace file
-go.work
-
-# Environment files
-.env
-
-# IDE
-.vscode/
-.idea/
+logs
+*.log
