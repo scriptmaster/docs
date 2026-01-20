@@ -1,2 +1,2 @@
 git pull
-v0.0.21.1.exe
+v0.0.21.2.exe
