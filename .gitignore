@@ -1,2 +1,3 @@
 logs
 *.log
+builds/models/whisper/*.bin
